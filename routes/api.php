@@ -23,6 +23,9 @@ use App\Http\Controllers\NotifikasiController;
 // ======================
 Route::post('/user/register', [UserAuthController::class, 'register']);
 Route::post('/user/login', [UserAuthController::class, 'login']);
+Route::middleware('auth:sanctum')->post('/update-profile', [UserAuthController::class, 'updateProfile']);
+Route::post('/user/update-profile', [UserAuthController::class, 'updateProfile']);
+Route::get('/user/{id}', [UserAuthController::class, 'getUser']);
 
 // ======================
 // KELAS & MAPEL (Flutter)
