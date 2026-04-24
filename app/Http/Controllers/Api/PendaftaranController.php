@@ -35,7 +35,7 @@ class PendaftaranController extends Controller
             'total_harga' => 'required',
         ]);
 
-        $data = $request->all();
+        $data = $request->except('foto');
 
         // PASTIKAN USER_ID MASUK
         $data['user_id'] = $request->user_id;
@@ -55,14 +55,21 @@ class PendaftaranController extends Controller
 
         // UPLOAD FOTO
         if ($request->hasFile('foto')) {
-
+        
             $file = $request->file('foto');
-
-            $path = $file->store('foto_siswa', 'public');
-
-            $data['foto'] = $path;
+        
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+        
+            $destinationPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads';
+        
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+        
+            $file->move($destinationPath, $filename);
+        
+            $data['foto'] = $filename;
         }
-
         // SIMPAN
         $pendaftar = Pendaftar::create($data);
 

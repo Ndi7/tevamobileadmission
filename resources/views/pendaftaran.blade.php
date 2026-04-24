@@ -35,7 +35,7 @@ Daftar Pendaftar
 
 <td class="px-3 py-2">
 @if($p->foto)
-<img src="{{ asset('storage/'.$p->foto) }}"
+<img src="{{ asset('uploads/' . basename($p->foto)) }}"
 class="w-12 h-12 object-cover rounded-md border">
 @else
 -

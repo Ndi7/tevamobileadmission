@@ -43,48 +43,54 @@ class PaymentSettingController extends Controller
     public function updateQris(Request $request)
     {
         $request->validate([
-            'qris' => 'required|image'
+            'qris' => 'required|image|mimes:png,jpg,jpeg'
         ]);
-
+    
         $setting = PaymentSetting::first();
-
-        // hapus lama
+    
+        // hapus QRIS lama
         if ($setting && $setting->qris) {
-            if (Storage::disk('public')->exists($setting->qris)) {
-                Storage::disk('public')->delete($setting->qris);
-            }
+            $old = $_SERVER['DOCUMENT_ROOT'].'/storage/'.$setting->qris;
+            if (file_exists($old)) unlink($old);
         }
-
-        // upload baru
-        $path = $request->file('qris')->store('qris', 'public');
-
+    
+        $folder = $_SERVER['DOCUMENT_ROOT'].'/storage/qris';
+    
+        if (!file_exists($folder)) {
+            mkdir($folder, 0755, true);
+        }
+    
+        $file = $request->file('qris');
+        $namaFile = 'qris_' . time() . '.' . $file->getClientOriginalExtension();
+    
+        move_uploaded_file($file->getPathname(), $folder.'/'.$namaFile);
+    
         PaymentSetting::updateOrCreate(
             ['id' => 1],
-            [
-                'qris' => $path
-            ]
+            ['qris' => 'qris/'.$namaFile]
         );
-
+    
         return back()->with('success', 'QRIS berhasil diupdate');
     }
-
     // =========================
     // DELETE QRIS
     // =========================
     public function deleteQris()
     {
         $setting = PaymentSetting::first();
-
+    
         if ($setting && $setting->qris) {
-
-            if (Storage::disk('public')->exists($setting->qris)) {
-                Storage::disk('public')->delete($setting->qris);
+    
+            $path = public_path('storage/' . $setting->qris);
+    
+            if (file_exists($path)) {
+                unlink($path);
             }
-
+    
             $setting->qris = null;
             $setting->save();
         }
-
+    
         return back()->with('success', 'QRIS berhasil dihapus');
     }
 
@@ -98,7 +104,7 @@ class PaymentSettingController extends Controller
             'rekening' => $setting->rekening ?? null,
             'pemilik' => $setting->pemilik ?? null,
             'qris' => $setting && $setting->qris
-                ? 'http://10.0.2.2:8000/storage/' . $setting->qris
+                ? 'https://tevacentre.site/storage/' . $setting->qris
                 : null,
         ]);
     }

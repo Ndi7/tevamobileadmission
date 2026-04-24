@@ -72,14 +72,20 @@ class UserAuthController extends Controller
 
     // 🔥 HANDLE UPLOAD FOTO
     if ($request->hasFile('photo')) {
-
+    
         $file = $request->file('photo');
-
+    
         $filename = time() . '.' . $file->getClientOriginalExtension();
-
-        $file->move(public_path('uploads'), $filename);
-
-        $user->photo = $filename; // simpan ke DB
+    
+        $destinationPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads';
+    
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0777, true);
+        }
+    
+        $file->move($destinationPath, $filename);
+    
+        $user->photo = $filename;
     }
 
     $user->update([

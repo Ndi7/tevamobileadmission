@@ -45,9 +45,10 @@ class PaymentController extends Controller
 
             Notifikasi::create([
                 'user_id' => $pendaftar->user_id,
+                'judul' => 'Pembayaran', // 🔥 TAMBAHKAN INI
                 'pesan' => 'Pembayaran sedang diverifikasi',
+                'is_read' => 0
             ]);
-
             return response()->json([
                 'message' => 'Bukti berhasil dikirim'
             ], 200);
