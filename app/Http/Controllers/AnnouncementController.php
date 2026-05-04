@@ -11,7 +11,7 @@ class AnnouncementController extends Controller
     {
         $data = Announcement::latest()->get();
 
-        return view('pengumuman', compact('data'));
+        return view('admin.pengumuman', compact('data'));
     }
 
     public function store(Request $request)

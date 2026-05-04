@@ -11,7 +11,7 @@ class MataPelajaranController extends Controller
     public function index()
 {
     $subjects = MataPelajaran::orderBy('nama_mapel', 'asc')->get();
-    return view('subjects', [
+    return view('admin.subjects', [
         'title' => 'Kelola Mata Pelajaran',
         'adminName' => session('adminName'),
         'subjects' => $subjects

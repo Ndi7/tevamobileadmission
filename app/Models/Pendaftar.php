@@ -9,6 +9,9 @@ class Pendaftar extends Model
 {
     use HasFactory;
 
+    // ❌ TIDAK PERLU protected $table
+    // karena tabel = pendaftars (sudah sesuai Laravel)
+
     protected $fillable = [
         'user_id',
         'nama',
@@ -28,6 +31,19 @@ class Pendaftar extends Model
         'foto',
         'status'
     ];
+
+    // ✅ INI WAJIB (biar web & flutter konsisten)
+    protected $casts = [
+        'mapel_wajib'   => 'array',
+        'mapel_reguler' => 'array',
+        'mapel_ekskul'  => 'array',
+        'tanggal_lahir' => 'date',
+        'total_harga'   => 'integer',
+    ];
+
+    // =====================
+    // RELASI
+    // =====================
 
     public function user()
     {

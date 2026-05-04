@@ -12,7 +12,7 @@ class PendaftarController extends Controller
     {
         $pendaftar = Pendaftar::latest()->get();
 
-        return view('pendaftaran', [
+        return view('admin/pendaftaran', [
             'title' => 'Daftar Pendaftar',
             'adminName' => session('adminName'),
             'pendaftar' => $pendaftar

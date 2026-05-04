@@ -30,7 +30,7 @@ class LaporanController extends Controller
             ->orderBy('bulan')
             ->get();
 
-        return view('laporan', [
+        return view('admin.laporan', [
             'bulanLabels' => $bulanLabels,
             'bulanData' => $bulanData,
             'keuangan' => $keuangan

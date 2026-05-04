@@ -37,4 +37,10 @@ class User extends Authenticatable
     {
         return $value ?? 'default.png';
     }
+
+    // 🔥 TAMBAHAN PENTING
+    public function pendaftars()
+    {
+        return $this->hasMany(\App\Models\Pendaftar::class);
+    }
 }

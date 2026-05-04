@@ -23,6 +23,6 @@ class LoginSuccessMail extends Mailable
     public function build()
     {
         return $this->subject('Login Berhasil')
-                    ->view('emails.login-success');
+                    ->view('admin.emails.login-success');
     }
 }

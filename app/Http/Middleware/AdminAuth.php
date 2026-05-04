@@ -9,7 +9,7 @@ class AdminAuth
     public function handle($request, Closure $next)
     {
         if (!session()->has('adminName')) {
-            return redirect()->route('login');
+            return redirect()->route('admin.login');
         }
         return $next($request);
     }

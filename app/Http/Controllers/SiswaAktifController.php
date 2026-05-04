@@ -20,6 +20,6 @@ class SiswaAktifController extends Controller
             )
             ->get();
 
-        return view('siswa-aktif', compact('students'));
+        return view('admin.siswa-aktif', compact('students'));
     }
 }

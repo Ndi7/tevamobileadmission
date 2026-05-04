@@ -21,7 +21,7 @@ class ProgramJenjangController extends Controller
             ->orderBy('tipe')
             ->get();
 
-        return view('programs', compact('kelasList', 'mapelList', 'paket'));
+        return view('admin.programs', compact('kelasList', 'mapelList', 'paket'));
     }
 
     // 🟢 Simpan mapel + harga

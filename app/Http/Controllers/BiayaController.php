@@ -7,58 +7,99 @@ use Illuminate\Http\Request;
 
 class BiayaController extends Controller
 {
-    // Tampilkan semua data biaya
+    /**
+     * =========================
+     * MENAMPILKAN SEMUA DATA BIAYA
+     * =========================
+     */
     public function index()
     {
-        $biaya = Biaya::orderBy('jenjang')->orderBy('tipe')->get();
+        /**
+         * Mengambil seluruh data biaya
+         * Diurutkan berdasarkan jenjang dan tipe biaya
+         */
+        $biaya = Biaya::orderBy('jenjang')
+                      ->orderBy('tipe')
+                      ->get();
 
-        return view('fees', [
+        // Menampilkan halaman pengelolaan biaya
+        return view('admin.fees', [
             'title' => 'Kelola Biaya',
             'biaya' => $biaya,
         ]);
     }
 
-    // Simpan biaya baru
+    /**
+     * =========================
+     * MENYIMPAN DATA BIAYA BARU
+     * =========================
+     */
     public function store(Request $request)
     {
+        /**
+         * Validasi input biaya
+         */
         $request->validate([
             'jenjang' => 'required|string',
-            'tipe' => 'required|string',
-            'biaya' => 'required|numeric|min:0',
+            'tipe'    => 'required|string',
+            'biaya'   => 'required|numeric|min:0',
         ]);
 
+        /**
+         * Menyimpan data biaya ke database
+         */
         Biaya::create([
             'jenjang' => $request->jenjang,
-            'tipe' => $request->tipe,
-            'biaya' => $request->biaya,
+            'tipe'    => $request->tipe,
+            'biaya'   => $request->biaya,
         ]);
 
+        // Redirect kembali dengan pesan sukses
         return redirect()->back()->with('success', 'Biaya berhasil ditambahkan.');
     }
 
-    // Update data biaya
+    /**
+     * =========================
+     * UPDATE DATA BIAYA
+     * =========================
+     */
     public function update(Request $request, $id)
     {
+        /**
+         * Validasi data biaya yang diperbarui
+         */
         $request->validate([
             'jenjang' => 'required|string',
-            'tipe' => 'required|string',
-            'biaya' => 'required|numeric|min:0',
+            'tipe'    => 'required|string',
+            'biaya'   => 'required|numeric|min:0',
         ]);
 
+        /**
+         * Update data biaya berdasarkan ID
+         */
         Biaya::where('id', $id)->update([
             'jenjang' => $request->jenjang,
-            'tipe' => $request->tipe,
-            'biaya' => $request->biaya,
+            'tipe'    => $request->tipe,
+            'biaya'   => $request->biaya,
         ]);
 
+        // Redirect kembali dengan pesan sukses
         return redirect()->back()->with('success', 'Biaya berhasil diperbarui.');
     }
 
-    // Hapus data biaya
+    /**
+     * =========================
+     * HAPUS DATA BIAYA
+     * =========================
+     */
     public function destroy($id)
     {
+        /**
+         * Menghapus data biaya berdasarkan ID
+         */
         Biaya::where('id', $id)->delete();
 
+        // Redirect kembali dengan pesan sukses
         return redirect()->back()->with('success', 'Biaya berhasil dihapus.');
     }
 }

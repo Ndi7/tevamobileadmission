@@ -10,7 +10,7 @@ class KelasController extends Controller
     // Tampilkan daftar kelas
     public function index()
     {
-        return view('kelas', [
+        return view('admin.kelas', [
             'title' => 'Kelola Kelas',
             'adminName' => session('adminName'),
             'kelas' => Kelas::orderBy('id', 'asc')->get() // urut sesuai data masuk
