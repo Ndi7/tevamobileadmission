@@ -146,4 +146,48 @@ class PaymentController extends Controller
         // Redirect kembali dengan pesan sukses
         return redirect()->back()->with('success', 'Pembayaran ditolak');
     }
+
+
+
+    /**
+     * =========================
+     * KHUSUS USER PAYMENT
+     * =========================
+     */
+
+    public function create($id)
+{
+    $pendaftar = \App\Models\Pendaftar::findOrFail($id);
+    $setting   = \App\Models\PaymentSetting::first();
+
+    // 🔥 FIX DI SINI
+    $jumlah = $pendaftar->total_harga;
+
+    return view('user.pembayaran', [
+        'pendaftar' => $pendaftar,
+        'jumlah'    => $jumlah,
+        'setting'   => $setting
+    ]);
+}
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'pendaftar_id' => 'required|exists:pendaftars,id',
+            'bukti'        => 'required|image',
+            'jumlah'       => 'required|numeric'
+        ]);
+
+        $path = $request->file('bukti')->store('bukti', 'public');
+
+        Payment::create([
+            'pendaftar_id' => $request->pendaftar_id,
+            'bukti'        => $path,
+            'jumlah'       => $request->jumlah,
+            'status'       => 'menunggu'
+        ]);
+
+        return redirect()->route('user.dashboard')
+            ->with('success', 'Bukti pembayaran berhasil dikirim');
+    }
 }

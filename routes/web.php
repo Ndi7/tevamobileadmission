@@ -67,7 +67,14 @@ Route::get('/success', function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('/pendaftaran', [PendaftaranController::class, 'store']);
+
+    Route::get('/pembayaran/{id}', [PaymentController::class, 'create'])
+    ->name('user.pembayaran');
+
+    Route::post('/pembayaran', [PaymentController::class, 'store'])
+    ->name('user.pembayaran.store');
 });
+
 /*
 |--------------------------------------------------------------------------
 | ADMIN LOGIN

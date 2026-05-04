@@ -142,27 +142,28 @@ function getStatusColor($payment, $status) {
 
                 </div>
 
-                <!-- BUTTON -->
                 @if(strtoupper($siswa->status ?? '') == "DITERIMA")
                     <div class="mt-4">
-                        <button
-                            class="w-full py-2 rounded-full text-sm font-semibold transition active:scale-95
-                            {{ $paymentStatus ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600' }}"
-                            {{ $paymentStatus ? 'disabled' : '' }}
-                        >
-                            @if(!$paymentStatus)
-                                Lanjutkan Pembayaran
-                            @elseif($paymentStatus == "menunggu")
-                                Menunggu Verifikasi
-                            @elseif($paymentStatus == "diterima")
-                                Pembayaran Berhasil
-                            @elseif($paymentStatus == "ditolak")
-                                Pembayaran Ditolak
-                            @endif
-                        </button>
+                        <a href="{{ route('user.pembayaran', [
+                                'id' => $siswa->id,
+                                'jumlah' => $siswa->biaya
+                            ]) }}"
+                            class="block text-center w-full py-2 rounded-full text-sm font-semibold transition active:scale-95
+                            {{ $paymentStatus ? 'bg-gray-400 cursor-not-allowed pointer-events-none' : 'bg-green-500 hover:bg-green-600' }}">
+                            
+                                @if(!$paymentStatus)
+                                    Lanjutkan Pembayaran
+                                @elseif($paymentStatus == "menunggu")
+                                    Menunggu Verifikasi
+                                @elseif($paymentStatus == "diterima")
+                                    Pembayaran Berhasil
+                                @elseif($paymentStatus == "ditolak")
+                                    Pembayaran Ditolak
+                                @endif
+
+                        </a>
                     </div>
                 @endif
-
             </div>
 
         @empty
