@@ -1,6 +1,32 @@
-@extends('user.layouts.app')
+@extends('user.layouts.app', [
+    'title' => 'Dashboard',
+    'mode' => 'dashboard'
+])
 
 @section('content')
+
+<style>
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #e5e7eb;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+  100% { left: 100%; }
+}
+</style>
 
 @php
 function parseMapel($data) {
@@ -48,7 +74,59 @@ function getStatusColor($payment, $status) {
 }
 @endphp
 
-<div class="max-w-7xl mx-auto px-6 py-8">
+<!-- SKELETON -->
+<div id="skeleton" class="max-w-7xl mx-auto px-6 py-8">
+
+    <div class="border border-gray-200 rounded-xl p-5 flex justify-between items-center mb-8 bg-white">
+        <div class="space-y-2">
+            <div class="skeleton h-5 w-40 rounded"></div>
+            <div class="skeleton h-4 w-56 rounded"></div>
+        </div>
+        <div class="skeleton w-20 h-20 rounded"></div>
+    </div>
+
+    <div class="skeleton h-5 w-32 mb-5 rounded"></div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        @for($i = 0; $i < 6; $i++)
+        <div class="bg-white border border-gray-200 rounded-xl p-4">
+
+            <div class="flex items-start gap-3 mb-3">
+                <div class="skeleton w-11 h-11 rounded-full"></div>
+
+                <div class="flex-1 space-y-2">
+                    <div class="skeleton h-4 w-32 rounded"></div>
+                    <div class="skeleton h-3 w-20 rounded"></div>
+                    <div class="skeleton h-3 w-24 rounded"></div>
+                </div>
+
+                <div class="skeleton h-5 w-16 rounded-full"></div>
+            </div>
+
+            <div class="border-t my-3"></div>
+
+            <div class="flex justify-between gap-4">
+                <div class="flex-1 space-y-2">
+                    <div class="skeleton h-3 w-24 rounded"></div>
+                    <div class="skeleton h-3 w-20 rounded"></div>
+                    <div class="skeleton h-3 w-28 rounded"></div>
+                </div>
+
+                <div class="w-[90px] space-y-2 text-right">
+                    <div class="skeleton h-3 w-16 rounded ml-auto"></div>
+                    <div class="skeleton h-4 w-20 rounded ml-auto"></div>
+                </div>
+            </div>
+
+            <div class="mt-4 skeleton h-8 w-full rounded-full"></div>
+
+        </div>
+        @endfor
+    </div>
+</div>
+
+<!-- CONTENT ASLI (TIDAK DIUBAH) -->
+<div id="content" class="hidden max-w-7xl mx-auto px-6 py-8">
 
     <!-- WELCOME -->
     <div class="border border-gray-200 rounded-xl p-5 flex justify-between items-center mb-8 bg-white">
@@ -66,7 +144,6 @@ function getStatusColor($payment, $status) {
         @forelse($pendaftar as $siswa)
 
             @php
-                // ✅ FIX: pakai object
                 $paymentStatus = $siswa->payment->status ?? null;
 
                 $mapel = array_merge(
@@ -78,7 +155,6 @@ function getStatusColor($payment, $status) {
 
             <div class="bg-[#006FB8] rounded-xl p-4 text-white shadow-sm hover:shadow-md hover:-translate-y-[2px] transition duration-200">
 
-                <!-- HEADER -->
                 <div class="flex items-start gap-3">
 
                     <div class="w-11 h-11 bg-white rounded-full overflow-hidden flex items-center justify-center shrink-0">
@@ -107,7 +183,6 @@ function getStatusColor($payment, $status) {
                         </p>
                     </div>
 
-                    <!-- STATUS -->
                     <span class="px-2.5 py-1 text-[10px] font-semibold rounded-full
                         {{ getStatusColor($paymentStatus, $siswa->status ?? null) }}">
                         {{ getStatusText($paymentStatus, $siswa->status ?? null) }}
@@ -116,10 +191,8 @@ function getStatusColor($payment, $status) {
 
                 <div class="border-t border-white/30 my-3"></div>
 
-                <!-- CONTENT -->
                 <div class="flex justify-between gap-4 text-sm">
 
-                    <!-- MAPEL -->
                     <div class="flex-1">
                         <p class="font-semibold mb-1">Mata Pelajaran</p>
 
@@ -132,7 +205,6 @@ function getStatusColor($payment, $status) {
                         </div>
                     </div>
 
-                    <!-- BIAYA -->
                     <div class="w-[90px] text-right">
                         <p class="font-semibold text-xs">Biaya</p>
                         <p class="font-bold mt-1 text-white/90 text-sm">
@@ -145,7 +217,7 @@ function getStatusColor($payment, $status) {
                 @if(strtoupper($siswa->status ?? '') == "DITERIMA")
                     <div class="mt-4">
                         <a href="{{ route('user.pembayaran', [
-                                'id' => $siswa->id,
+                                'uuid' => $siswa->uuid,
                                 'jumlah' => $siswa->biaya
                             ]) }}"
                             class="block text-center w-full py-2 rounded-full text-sm font-semibold transition active:scale-95
@@ -182,5 +254,14 @@ function getStatusColor($payment, $status) {
         <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-4.4 0-8 2-8 4v2h16v-2c0-2-3.6-4-8-4z"/>
     </svg>
 </a>
+
+<script>
+window.onload = () => {
+    setTimeout(() => {
+        document.getElementById('skeleton').style.display = 'none'
+        document.getElementById('content').classList.remove('hidden')
+    }, 700)
+}
+</script>
 
 @endsection

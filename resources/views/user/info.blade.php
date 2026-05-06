@@ -1,4 +1,7 @@
-@extends('user.layouts.app')
+@extends('user.layouts.app', [
+    'title' => 'Informasi',
+    'mode' => 'info'
+])
 
 @section('content')
 

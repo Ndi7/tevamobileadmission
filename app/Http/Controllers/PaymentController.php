@@ -155,20 +155,22 @@ class PaymentController extends Controller
      * =========================
      */
 
-    public function create($id)
-{
-    $pendaftar = \App\Models\Pendaftar::findOrFail($id);
-    $setting   = \App\Models\PaymentSetting::first();
+    public function create($uuid)
+    {
+        $pendaftar = \App\Models\Pendaftar::where('uuid', $uuid)
+            ->where('user_id', auth()->id()) // 🔥 SECURITY
+            ->firstOrFail();
 
-    // 🔥 FIX DI SINI
-    $jumlah = $pendaftar->total_harga;
+        $setting = \App\Models\PaymentSetting::first();
 
-    return view('user.pembayaran', [
-        'pendaftar' => $pendaftar,
-        'jumlah'    => $jumlah,
-        'setting'   => $setting
-    ]);
-}
+        $jumlah = $pendaftar->total_harga;
+
+        return view('user.pembayaran', [
+            'pendaftar' => $pendaftar,
+            'jumlah'    => $jumlah,
+            'setting'   => $setting
+        ]);
+    }
 
     public function store(Request $request)
     {

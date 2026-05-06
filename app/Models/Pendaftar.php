@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Pendaftar extends Model
 {
@@ -14,6 +15,7 @@ class Pendaftar extends Model
 
     protected $fillable = [
         'user_id',
+        'uuid',
         'nama',
         'nama_ayah',
         'nama_ibu',
@@ -53,5 +55,16 @@ class Pendaftar extends Model
     public function payment()
     {
         return $this->hasOne(\App\Models\Payment::class, 'pendaftar_id');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (!$model->uuid) {
+                $model->uuid = Str::uuid();
+            }
+        });
     }
 }

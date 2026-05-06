@@ -6,6 +6,7 @@ use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\UserInfoController;
+use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\MataPelajaranController;
 use App\Http\Controllers\ProgramJenjangController;
@@ -43,15 +44,32 @@ Route::get('/user/login', [UserAuthController::class, 'showLogin'])
 Route::post('/user/login', [UserAuthController::class, 'login'])
     ->name('user.login.process');
 
+Route::get('/login', function () {
+    return redirect()->route('user.login');
+})->name('login');
+
 Route::post('/user/logout', [UserAuthController::class, 'logout'])
     ->name('user.logout');
 
 Route::get('/user/dashboard', [UserDashboardController::class, 'index'])
-    ->middleware('auth')   // 🔥 PENTING
+    ->middleware(['auth', 'nocache'])
     ->name('user.dashboard');
 
 Route::get('/user/info', [UserInfoController::class, 'index'])
     ->name('user.info');
+
+Route::middleware(['auth', 'nocache'])->group(function () {
+
+    Route::get('/user/profile', [UserProfileController::class, 'index'])
+        ->name('user.profile');
+
+    Route::get('/user/profile/edit', [UserProfileController::class, 'edit'])
+        ->name('user.edit.profile');
+
+    Route::post('/user/profile/update', [UserProfileController::class, 'update'])
+        ->name('user.update.profile');
+
+});   
 
 Route::get('/user/ketentuan', function () {
     return view('user.ketentuan');
@@ -65,10 +83,10 @@ Route::get('/success', function () {
     return view('user.success');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'nocache'])->group(function () {
     Route::post('/pendaftaran', [PendaftaranController::class, 'store']);
 
-    Route::get('/pembayaran/{id}', [PaymentController::class, 'create'])
+    Route::get('/pembayaran/{uuid}', [PaymentController::class, 'create'])
     ->name('user.pembayaran');
 
     Route::post('/pembayaran', [PaymentController::class, 'store'])

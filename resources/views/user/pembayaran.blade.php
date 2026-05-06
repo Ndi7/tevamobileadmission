@@ -22,93 +22,105 @@
   </div>
 
   <!-- STEP -->
-  <div class="flex justify-between text-xs text-gray-500 mb-6">
-    <span>Metode</span>
-    <span>Bayar</span>
-    <span>Upload</span>
+  <div class="flex justify-between text-xs mb-6">
+    <span id="label1" class="font-semibold text-[#006FB8]">Metode</span>
+    <span id="label2" class="text-gray-400">Bayar</span>
+    <span id="label3" class="text-gray-400">Upload</span>
   </div>
 
-  <!-- CARD -->
-  <div class="bg-white border border-gray-200 rounded-lg">
+  <!-- SKELETON -->
+  <div id="skeleton" class="bg-white border border-gray-200 rounded-lg p-5">
+    <div class="skeleton h-4 w-24 mb-4 rounded"></div>
+    <div class="skeleton h-10 w-full mb-3 rounded"></div>
+    <div class="skeleton h-10 w-full mb-3 rounded"></div>
+    <div class="skeleton h-32 w-full rounded"></div>
+  </div>
 
-    <div class="p-5">
+  <!-- CONTENT -->
+  <div id="content" class="hidden">
 
-      <!-- STEP 1 -->
-      <div id="step1">
-        <p class="text-sm font-medium mb-3">Pilih metode</p>
+    <div class="bg-white border border-gray-200 rounded-lg">
 
-        <div onclick="setMetode('bank')" class="item" id="bank">
-          Transfer Bank
-        </div>
+      <div class="p-5">
 
-        <div onclick="setMetode('qris')" class="item" id="qris">
-          QRIS
-        </div>
-      </div>
+        <!-- STEP 1 -->
+        <div id="step1">
+          <p class="text-sm font-medium mb-3">Pilih metode</p>
 
-      <!-- STEP 2 -->
-      <div id="step2" class="hidden text-sm">
+          <div onclick="setMetode('bank')" class="item" id="bank">
+            Transfer Bank
+          </div>
 
-        <div id="bankContent">
-          <p class="font-medium mb-3">Transfer Bank</p>
-
-          <div class="space-y-2 text-gray-600">
-            <p>{{ $setting->bank }}</p>
-
-            <div class="flex justify-between">
-              <span>{{ $setting->rekening }}</span>
-              <button onclick="copyRek()" class="text-[#006FB8] text-sm">
-                Salin
-              </button>
-            </div>
-
-            <p>a.n {{ $setting->pemilik }}</p>
+          <div onclick="setMetode('qris')" class="item" id="qris">
+            QRIS
           </div>
         </div>
 
-        <div id="qrisContent" class="hidden text-center">
-          <img src="{{ asset('storage/'.$setting->qris) }}" class="mx-auto w-40 mb-2">
-          <p class="text-xs text-gray-500">Scan QR</p>
+        <!-- STEP 2 -->
+        <div id="step2" class="hidden text-sm">
+
+          <div id="bankContent">
+            <p class="font-medium mb-3">Transfer Bank</p>
+
+            <div class="space-y-2 text-gray-600">
+              <p>{{ $setting->bank }}</p>
+
+              <div class="flex justify-between">
+                <span>{{ $setting->rekening }}</span>
+                <button onclick="copyRek()" class="text-[#006FB8] text-sm">
+                  Salin
+                </button>
+              </div>
+
+              <p>a.n {{ $setting->pemilik }}</p>
+            </div>
+          </div>
+
+          <div id="qrisContent" class="hidden text-center">
+            <img src="{{ asset('storage/'.$setting->qris) }}" class="mx-auto w-40 mb-2">
+            <p class="text-xs text-gray-500">Scan QR</p>
+          </div>
+
+        </div>
+
+        <!-- STEP 3 -->
+        <div id="step3" class="hidden">
+          <p class="text-sm font-medium mb-3">Upload bukti</p>
+
+          <input type="file" id="bukti"
+            class="border border-gray-200 rounded-md p-2 w-full mb-3 text-sm"
+            onchange="previewImg()">
+
+          <img id="preview" class="hidden w-full rounded-md border">
         </div>
 
       </div>
 
-      <!-- STEP 3 -->
-      <div id="step3" class="hidden">
-        <p class="text-sm font-medium mb-3">Upload bukti</p>
+      <!-- FOOTER -->
+      <div class="border-t bg-gray-50 px-5 py-4">
 
-        <input type="file" id="bukti"
-          class="border border-gray-200 rounded-md p-2 w-full mb-3 text-sm"
-          onchange="previewImg()">
+        <div class="flex justify-between text-sm mb-3">
+          <span class="text-gray-500">Total</span>
+          <span class="font-medium">
+            Rp {{ number_format($jumlah) }}
+          </span>
+        </div>
 
-        <img id="preview" class="hidden w-full rounded-md border">
+        <button id="btn"
+          onclick="nextStep()"
+          disabled
+          class="w-full bg-[#006FB8] text-white py-2.5 rounded-md text-sm disabled:bg-gray-300 flex justify-center items-center gap-2">
+
+          <span id="btnText">Lanjut</span>
+
+          <svg id="loading" class="w-4 h-4 animate-spin hidden"
+            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke="white" stroke-width="4"></circle>
+          </svg>
+
+        </button>
+
       </div>
-
-    </div>
-
-    <!-- FOOTER -->
-    <div class="border-t bg-gray-50 px-5 py-4">
-
-      <div class="flex justify-between text-sm mb-3">
-        <span class="text-gray-500">Total</span>
-        <span class="font-medium">
-          Rp {{ number_format($jumlah) }}
-        </span>
-      </div>
-
-      <button id="btn"
-        onclick="nextStep()"
-        disabled
-        class="w-full bg-[#006FB8] text-white py-2.5 rounded-md text-sm disabled:bg-gray-300 flex justify-center items-center gap-2">
-
-        <span id="btnText">Lanjut</span>
-
-        <svg id="loading" class="w-4 h-4 animate-spin hidden"
-          xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="10" stroke="white" stroke-width="4"></circle>
-        </svg>
-
-      </button>
 
     </div>
 
@@ -133,11 +145,42 @@
   border-color:#006FB8;
   background:#f0f7fc;
 }
+
+/* SKELETON */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #e5e7eb;
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  animation: shimmer 1.2s infinite;
+}
+@keyframes shimmer {
+  100% { left: 100%; }
+}
 </style>
 
 <script>
 let step = 1
 let metode = null
+
+function showContent(){
+  document.getElementById('skeleton').style.display = 'none'
+  document.getElementById('content').classList.remove('hidden')
+}
+
+window.onload = () => {
+  setTimeout(() => {
+    showContent()
+  }, 800)
+}
 
 function toast(msg){
   let t = document.getElementById('toast')
@@ -162,6 +205,20 @@ function updateBtn(){
   if(step==3) btn.disabled = !bukti.files.length
 }
 
+function updateStepUI(){
+  const l1 = document.getElementById('label1')
+  const l2 = document.getElementById('label2')
+  const l3 = document.getElementById('label3')
+
+  l1.className = "text-gray-400"
+  l2.className = "text-gray-400"
+  l3.className = "text-gray-400"
+
+  if(step === 1) l1.className = "font-semibold text-[#006FB8]"
+  if(step === 2) l2.className = "font-semibold text-[#006FB8]"
+  if(step === 3) l3.className = "font-semibold text-[#006FB8]"
+}
+
 function setMetode(val){
   metode = val
   document.querySelectorAll('.item').forEach(el=>el.classList.remove('active'))
@@ -174,28 +231,30 @@ function nextStep(){
   if(step==1){
     if(!metode) return toast("Pilih metode dulu")
 
-    step1.classList.add('hidden')
-    step2.classList.remove('hidden')
+    document.getElementById('step1').classList.add('hidden')
+    document.getElementById('step2').classList.remove('hidden')
 
     if(metode=='bank'){
-      bankContent.classList.remove('hidden')
-      qrisContent.classList.add('hidden')
+      document.getElementById('bankContent').classList.remove('hidden')
+      document.getElementById('qrisContent').classList.add('hidden')
     }else{
-      qrisContent.classList.remove('hidden')
-      bankContent.classList.add('hidden')
+      document.getElementById('qrisContent').classList.remove('hidden')
+      document.getElementById('bankContent').classList.add('hidden')
     }
 
-    step=2
+    step = 2
     updateBtn()
+    updateStepUI()
     return
   }
 
   if(step==2){
-    step2.classList.add('hidden')
-    step3.classList.remove('hidden')
+    document.getElementById('step2').classList.add('hidden')
+    document.getElementById('step3').classList.remove('hidden')
 
-    step=3
+    step = 3
     updateBtn()
+    updateStepUI()
     return
   }
 
@@ -227,7 +286,7 @@ async function submit(){
   let fd = new FormData()
   fd.append('bukti', file)
   fd.append('pendaftar_id', "{{ $pendaftar->id }}")
-  fd.append('jumlah', "{{ $jumlah }}") // ✅ FIX DI SINI
+  fd.append('jumlah', "{{ $jumlah }}")
 
   try{
     let res = await fetch('/pembayaran',{
@@ -239,8 +298,8 @@ async function submit(){
     })
 
     if(res.ok){
-      toast("Berhasil kirim")
-      setTimeout(()=>location.href="/user/dashboard",1000)
+      document.getElementById('successModal').classList.remove('hidden')
+      document.getElementById('successModal').classList.add('flex')
     }else{
       toast("Gagal kirim")
     }
@@ -252,8 +311,15 @@ async function submit(){
   loadingState(false)
 }
 
+function goDashboard(){
+  location.href = "/user/dashboard"
+}
+
 updateBtn()
+updateStepUI()
 </script>
+
+@include('user.partials.success-modal')
 
 </body>
 </html>
